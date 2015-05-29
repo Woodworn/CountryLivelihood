@@ -1,0 +1,32 @@
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+rect {
+    transition: all 0.3s;
+}
+.dataBar rect:hover{
+    fill: red;
+}
+
+.countryBar rect:hover{
+    fill:green;
+}
+
+.lineChart .line {
+    stroke-width:5;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+
+svg {
+    background-color:rgb(247,247,249);
+    border-color: black;
+}
