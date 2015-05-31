@@ -26,7 +26,7 @@ rect {
     stroke-linejoin:round;
 }
 
-svg {
+.countryBar svg {
     background-color:rgb(247,247,249);
     border-color: black;
 }
