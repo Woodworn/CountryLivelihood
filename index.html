@@ -5,6 +5,7 @@
     <title></title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link type="text/css" rel="stylesheet" href="css/style.css">
+	<link type="text/css" rel="stylesheet" href="css/map.css">
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -13,8 +14,17 @@
     <!-- D3 and Chart Scripts -->
     <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
     <script src="js/CandleChart.js"></script>
+	<script src="js/map.js"></script>
+	<script src="js/topojson.v1.min.js"></script>
+	<script type="text/javascript" src="js/d3.min.js"></script>
 </head>
-<body>
+<body onload="map2()">
+<div id="container"></div>
+		<script>
+			var map = map();
+				map();
+		</script>
+
     <div id="chart">
     </div>
 
