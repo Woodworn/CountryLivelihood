@@ -30,6 +30,14 @@ function map() {
 function draw(topo) {
   var country = g.selectAll(".country").data(topo);
 
+
+    var vMax =  d3.max(country, function(d) { return +d.properties.le; });
+    var vMin =  d3.min(country, function(d) { return +d.properties.le; });
+
+  var colorScale = d3.scale.linear()
+      .range([0,255.])
+      .domain([vMin,vMax]);
+
   country.enter().insert("path")
       .attr("class", "country")
       .attr("d", path)
@@ -37,43 +45,7 @@ function draw(topo) {
       .attr("title", function(d,i) { return d.properties.name; })
 	  .attr("life", function(d,i) { return d.properties.le; })
       .style("fill", function(d) {
-			if(d.properties.le > 30 && d.properties.le <= 40){
-				return "white";
-			}
-			else if(d.properties.le >= 41 && d.properties.le <= 44){
-				return "#FFE6E6";
-			}
-			else if(d.properties.le >= 45 && d.properties.le <= 49){
-				return "#FFCCCC";
-			}
-			else if(d.properties.le >= 50 && d.properties.le <= 54){
-				return "#FFB2B2";
-			}
-			else if(d.properties.le >= 55 && d.properties.le <= 59){
-				return "#FF9999";
-			}
-			else if(d.properties.le >= 60 && d.properties.le <= 63){
-				return "#FF8080";
-			}
-			else if(d.properties.le >= 64 && d.properties.le <= 67){
-				return "#FF6666";
-			}
-			else if(d.properties.le >= 68 && d.properties.le <= 71){
-				return "#FF4D4D";
-			}
-			else if(d.properties.le >= 72 && d.properties.le <= 75){
-				return "#FF3333";
-			}
-			else if(d.properties.le >= 76 && d.properties.le <= 79){
-				return "#FF1919";
-			}
-			else if(d.properties.le >= 80 && d.properties.le <= 84){
-				return "red";
-			}
-			else{
-				return "black";
-			}
-			
+			return "rgb("+colorScale(d.properties.le)+", 1., 1.)";
 		});
 
   //offsets for tooltips
