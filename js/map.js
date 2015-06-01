@@ -44,7 +44,7 @@ function draw(topo) {
       .attr("id", function(d,i) { return d.id; })
       .attr("title", function(d,i) { return d.properties.name; })
 	  .attr("life", function(d,i) { return d.properties.le; })
-      .style("fill", function(d) {
+      .style("fill", function(d, i) {
 			return "rgb("+colorScale(d.properties.le)+", 1., 1.)";
 		});
 
