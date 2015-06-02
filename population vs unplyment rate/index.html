@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<style>
+body {
+  font: 12px aerial	;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+
+}
+
+.tooltip {
+  position: absolute;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+// chart spec
+var margin = {top: 10, right: 30, bottom: 30, left: 40},
+    width = 1250- margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+
+
+//x axis setup
+var xValue = function(d) {
+	return d["Population"];}, 
+    xScale = d3.scale.linear().range([0, width]), 
+    xval = function(d){ 
+		return xScale(xValue(d));}, 
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom").ticks(10);
+	
+
+// y axis set up
+var yValue = function(d) { 
+	return d["UnemploymentRate"];}, 
+    yScale = d3.scale.linear().range([height, 0]), 
+    yval = function(d) { 
+		return yScale(yValue(d));}, 
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+
+
+// add the svg emlement to the page
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// tool tip area set up
+var tool_tip = d3.select("body").append("div")
+    .attr("class", "tooltip");
+
+// load dataset
+d3.csv("countries.csv", function(error, data) {
+  data.forEach(function(d) {
+    d["UnemploymentRate"] = +d["UnemploymentRate"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+
+	// axis domain
+  xScale.domain([d3.min(data, xValue), 150000000]);
+  yScale.domain([d3.min(data, yValue), d3.max(data, yValue)]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Population");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".90em")
+      .style("text-anchor", "end")
+      .text("UnemploymentRate");
+
+  // dots drawing
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3)
+      .attr("cx", xval)
+      .attr("cy", yval)
+      .style("fill","#1E90FF") 
+	  // adding country info on hover
+      .on("mouseover", function(d) {
+          tool_tip.transition()
+               .duration(200)
+               .style("opacity", 1	);
+          tool_tip.html(d["Country"] + "<br/> (P:" + xValue(d) 
+	        + ", U:" + yValue(d) + ")")
+               .style("left", (d3.event.pageX ) + "px")
+               .style("top", (d3.event.pageY ) + "px");
+      })
+      .on("mouseout", function(d) {
+          tool_tip.transition().style("opacity", 0);
+      });
+
+  
+});
+
+</script>
+</body>
+</html>
