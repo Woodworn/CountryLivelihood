@@ -18,6 +18,7 @@ function barChart() {
     var xLabel = "";
     var xTicks = undefined;
     var yTicks = undefined;
+    var selectedCountry;
 
     var chart = function(selection) {
         selection.each(function(data,i) {
@@ -29,19 +30,14 @@ function barChart() {
                 if(a[valueKey] > b[valueKey]) {
                     return 1;
                 }
-
                 return 0;
             });
-
 
             //If not specified, set max to the max value in the data
             var vMax =  d3.max(data, function(d) { return +d[valueKey]; });
             var vMin =  d3.min(data, function(d) { return +d[valueKey]; });
-
             var topMax = d3.max(data, function(d) { return +d[topBarKey]; });
-
             var botMax = d3.max(data, function(d) { return +d[bottomBarKey]; });
-
 
             //Create Scales
             var nameScale = d3.scale.ordinal()
@@ -95,7 +91,15 @@ function barChart() {
             //AppendTopBar
             enterSet.append("g")
                 .attr("class", barClass)
-                .attr("fill", "#4F628E")
+                .attr("id", function(d){
+                    return d[nameKey];
+                })
+                .attr("fill", function(d,i){
+                    if(d[nameKey] === selectedCountry){
+                        return "rgba(1,1,1,1)";
+                    }
+                    return "#4F628E";
+                })
                 .append("rect")
                 .attr("height", function (d) {
                     return topValueScale(d[topBarKey]);
@@ -110,7 +114,12 @@ function barChart() {
 
             enterSet.append("g")
                 .attr("class", barClass)
-                .attr("fill", "#D4C26A")
+                .attr("fill", function(d,i){
+                    if(d[nameKey] === selectedCountry){
+                        return "rgba(1,1,1,1)";
+                    }
+                    return "#D4C26A";
+                })
                 .append("rect")
                 .attr("height", function (d) {
                     return bottomValueScale(d[bottomBarKey]);
@@ -122,6 +131,10 @@ function barChart() {
                 .attr("y", function(d) {
                     return 2.*height/3. - valueScale(d[valueKey]);
                 });
+
+            var changeSelected = function(){
+                console.log("Changing selected");
+            };
 
             //Flip scale for proper axis labeling
             valueScale.range([height, 0]);
@@ -166,10 +179,19 @@ function barChart() {
                 .style("text-anchor", "middle")
                 .text(yLabel);
 
-
         })
     };
 
+    chart.changeSelection = function(value){
+        selectedCountry = value;
+        d3.select("#"+value).attr("fill","rgba(0,0,0,1)");
+    };
+
+    chart.selectedCountry = function(value){
+        if (!arguments.length) return selectedCountry;
+        selectedCountry = value;
+        return chart;
+    };
 
     //Getters and Setters
     chart.width = function(value) {

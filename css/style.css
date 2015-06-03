@@ -30,3 +30,14 @@ rect {
     background-color:rgb(247,247,249);
     border-color: black;
 }
+
+#navMap {
+    margin-left: 2%;
+    width: 30%;
+    height: 400px;
+    float:left;
+}
+
+#candleChart{
+    clear:both;
+}

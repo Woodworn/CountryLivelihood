@@ -2,14 +2,6 @@
   stroke: #fff;
   stroke-width: 1.5px;
 }
-#container {
-  margin:10px 10%;
-  border:2px solid #000;
-  border-radius: 5px;
-  height:100%;
-  overflow:hidden;
-  background: #5CD6FF;
-}
 .hidden { 
   display: none; 
 }
@@ -22,4 +14,13 @@ div.tooltip {
   box-shadow: 0px 0px 2px 0px #a6a6a6; 
   opacity: 0.9; 
   position: absolute;
+}
+
+#map {
+    margin-left: 2%;
+    border:1px solid #000;
+    border-radius: 5px;
+    overflow:hidden;
+    background: #5CD6FF;
+    float:left;
 }
