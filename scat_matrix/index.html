@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<div id="area1" style="height:400px; width: 500px;"></div>
+<div id="area2"style="height:400px; width: 500px;"></div>
+<div id="area3" style="height:400px; width: 500px;"></div>
+<div id= "area4" style="height:400px; width: 500px;"></div>
+<div id ="area5" style="height:400px; width: 500px;"></div>
+<div id ="area6" style="height:400px; width: 500px;"></div>
+
+<style>
+body {
+  font: 12px areial;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+}
+
+.dot {
+  stroke: #000A
+}
+
+.tooltip {
+  position: absolute;
+
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script>
+var margin = {top: 10, right: 40, bottom: 30, left: 50},
+    width = 500- margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+/* 
+population vs hiv death
+ */ 
+
+// setup x 
+var xValue = function(d) { return d["Population"] ;}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { return xScale(xValue(d));}, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom").ticks(5);
+	
+
+
+// setup y
+var yValue = function(d) { return d["HIV/AIDSDeath"];}, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+
+// add svg element to the div
+var svg = d3.select("#area1").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// add the tooltip area to the body
+var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+// load data
+d3.csv("countries.csv", function(error, data) {
+
+
+  data.forEach(function(d) {
+    d["HIV/AIDSDeath"] = +d["HIV/AIDSDeath"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+
+  //domain spicification
+  xScale.domain([d3.min(data, xValue)-1, 150000000]);
+  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Population");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 7)
+      .attr("dy", ".80em")
+      .style("text-anchor", "end")
+      .text("HIV/AIDSDeath");
+
+  // draw dots
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", "dodgerblue") 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(400)
+               .style("opacity", 1);
+          tooltip.html(d["Country"] + "<br/> (" + xValue(d) 
+	        + ", " + yValue(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+ 
+  
+});
+
+
+/* 
+    death rate vs hiv/aids death
+ */ 
+
+// setup x 
+var xValue2 = function(d) { return d["DeathRate"] ;}, // data -> value
+    xScale2 = d3.scale.linear().range([0, width]), // value -> display
+    xMap2 = function(d) { return xScale2(xValue2(d));}, // data -> display
+    xAxis2 = d3.svg.axis().scale(xScale2).orient("bottom");
+
+
+// setup y
+var yValue2 = function(d) { return d["HIV/AIDSDeath"];},  
+    yScale2 = d3.scale.linear().range([height, 0]),  
+    yMap2 = function(d) { return yScale2(yValue2(d));},  
+    yAxis2 = d3.svg.axis().scale(yScale2).orient("left");
+
+
+// add the graph canvas to body
+var svg2 = d3.select("#area2").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+// load data
+d3.csv("countries.csv", function(error, data) {
+
+
+  data.forEach(function(d) {
+    d["DeathRate"] = +d["DeathRate"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+// domain spicification
+  xScale2.domain([d3.min(data, xValue2)-1,d3.max(data, xValue2)+1]);
+  yScale2.domain([d3.min(data, yValue2)-1, d3.max(data, yValue2)+1]);
+
+  // x-axis
+  svg2.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis2)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Death rate");
+
+  // y-axis
+  svg2.append("g")
+      .attr("class", "y axis")
+      .call(yAxis2)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("HIV/AIDSDeath");
+
+  // draw dot
+  svg2.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3)
+      .attr("cx", xMap2)
+      .attr("cy", yMap2)
+      .style("fill", "dodgerblue") 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(400)
+               .style("opacity", .8);
+          tooltip.html(d["Country"] + "<br/> (" + xValue2(d) 
+	        + ", " + yValue2(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(300)
+               .style("opacity", 0);
+      });
+
+ 
+  
+});
+
+/* 
+life epectency vs hiv death
+ */ 
+
+// setup x 
+var xValue3 = function(d) { return d["LifeExpectancy"] ;}, // data -> value
+    xScale3 = d3.scale.linear().range([0, width]), // value -> display
+    xMap3 = function(d) { return xScale3(xValue3(d));}, // data -> display
+    xAxis3 = d3.svg.axis().scale(xScale3).orient("bottom");
+
+
+// setup y
+var yValue3 = function(d) { return d["HIV/AIDSDeath"];}, // data -> value
+    yScale3 = d3.scale.linear().range([height, 0]), // value -> display
+    yMap3 = function(d) { return yScale3(yValue3(d));}, // data -> display
+    yAxis3 = d3.svg.axis().scale(yScale3).orient("left");
+
+// add the graph canvas the body
+var svg3 = d3.select("#area3").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+// load data
+d3.csv("countries.csv", function(error, data) {
+
+ 
+  data.forEach(function(d) {
+    d["DeathRate"] = +d["DeathRate"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+
+  xScale3.domain([d3.min(data, xValue3)-1,d3.max(data, xValue3)+1]);
+  yScale3.domain([d3.min(data, yValue3)-1, d3.max(data, yValue3)+1]);
+
+  // x-axis
+  svg3.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis3)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("LifeExpectancy");
+
+  // y-axis
+  svg3.append("g")
+      .attr("class", "y axis")
+      .call(yAxis3)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("HIV/AIDSDeath");
+
+  // draw dot
+  svg3.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3)
+      .attr("cx", xMap3)
+      .attr("cy", yMap3)
+      .style("fill", "dodgerblue") 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .8);
+          tooltip.html(d["Country"] + "<br/> (" + xValue3(d) 
+	        + ", " + yValue3(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", 0);
+      });
+
+
+});
+
+/* 
+	life expectncey vs hiv living 
+ */ 
+
+// setup x 
+var xValue4 = function(d) { return d["LifeExpectancy"] ;}, // data -> value
+    xScale4 = d3.scale.linear().range([0, width]), // value -> display
+    xMap4 = function(d) { return xScale4(xValue4(d));}, // data -> display
+    xAxis4 = d3.svg.axis().scale(xScale4).orient("bottom");
+
+
+// setup y
+var yValue4 = function(d) { return d["HIV/AIDSLiving"];}, // data -> value
+    yScale4 = d3.scale.linear().range([height, 0]), // value -> display
+    yMap4 = function(d) { return yScale4(yValue4(d));}, // data -> display
+    yAxis4 = d3.svg.axis().scale(yScale4).orient("left");
+
+
+// add the graph canvas to the body 
+var svg4 = d3.select("#area4").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// load data
+d3.csv("countries.csv", function(error, data) {
+
+  data.forEach(function(d) {
+    d["DeathRate"] = +d["DeathRate"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+// domain requirment for the axis
+  xScale4.domain([d3.min(data, xValue4)-1,d3.max(data, xValue4)+1]);
+  yScale4.domain([d3.min(data, yValue4)-1, 5500000]);
+
+  // x-axis
+  svg4.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis4)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("LifeExpectancy");
+
+  // y-axis
+  svg4.append("g")
+      .attr("class", "y axis")
+      .call(yAxis4)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("HIV/AIDSLiving");
+
+  // draw dots
+  svg4.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", xMap4)
+      .attr("cy", yMap4)
+      .style("fill","dodgerblue") 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html(d["Country"] + "<br/> (" + xValue4(d) 
+	        + ", " + yValue4(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+
+
+  
+});
+
+
+/* 
+population vs hiv living
+ */ 
+
+// setup x 
+var xValue5 = function(d) { return d["Population"] ;}, 
+    xScale5 = d3.scale.linear().range([0, width]), 
+    xMap5 = function(d) { return xScale5(xValue5(d));} 
+    xAxis5 = d3.svg.axis().scale(xScale5).orient("bottom").ticks(5);
+ 
+
+// setup y
+var yValue5 = function(d) { return d["HIV/AIDSLiving"];}, // data -> value
+    yScale5 = d3.scale.linear().range([height, 0]), // value -> display
+    yMap5 = function(d) { return yScale5(yValue5(d));}, // data -> display
+    yAxis5 = d3.svg.axis().scale(yScale5).orient("left");
+
+
+// add the graph canvas to the body 
+var svg5 = d3.select("#area5").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// load data
+d3.csv("countries.csv", function(error, data) {
+
+
+  data.forEach(function(d) {
+    d["DeathRate"] = +d["DeathRate"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+
+// domain spicification
+  xScale5.domain([d3.min(data, xValue5)-1,d3.max(data, xValue5)+1]);
+  yScale5.domain([d3.min(data, yValue5)-1, 5000000]);
+
+  // x-axis
+  svg5.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis5)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Population");
+
+  // y-axis
+  svg5.append("g")
+      .attr("class", "y axis")
+      .call(yAxis5)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("HIV/AIDSLiving");
+
+  // draw dots
+  svg5.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3)
+      .attr("cx", xMap5)
+      .attr("cy", yMap5)
+      .style("fill", "dodgerblue") 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html(d["Country"] + "<br/> (" + xValue5(d) 
+	        + ", " + yValue5(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0);
+      });
+});
+
+
+
+/* 
+ death rate vs HIV living
+ */ 
+
+// setup x 
+var xValue6 = function(d) { return d["DeathRate"] ;}, // data -> value
+    xScale6 = d3.scale.linear().range([0, width]), // value -> display
+    xMap6 = function(d) { return xScale6(xValue6(d));}, // data -> display
+    xAxis6 = d3.svg.axis().scale(xScale6).orient("bottom");
+
+
+// setup y
+var yValue6 = function(d) { return d["HIV/AIDSLiving"];}, // data -> value
+    yScale6 = d3.scale.linear().range([height, 0]), // value -> display
+    yMap6 = function(d) { return yScale6(yValue6(d));}, // data -> display
+    yAxis6 = d3.svg.axis().scale(yScale6).orient("left");
+
+
+// add the graph canvas to the body of the webpage
+var svg6 = d3.select("#area6").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// load data
+d3.csv("countries.csv", function(error, data) {
+
+
+  data.forEach(function(d) {
+    d["DeathRate"] = +d["DeathRate"];
+   d["Population"]  = +d["Population"] ;
+   d["Continent"];
+     console.log(d);
+  });
+
+  // domain spicification
+  xScale6.domain([d3.min(data, xValue6)-1,d3.max(data, xValue6)+1]);
+  yScale6.domain([d3.min(data, yValue6)-1, 5500000]);
+
+  // x-axis
+  svg6.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis6)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Death Rate");
+
+  // y-axis
+  svg6.append("g")
+      .attr("class", "y axis")
+      .call(yAxis6)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".9 em")
+      .style("text-anchor", "end")
+      .text("HIV/AIDSLiving");
+
+  // draw dots
+  svg6.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3)
+      .attr("cx", xMap6)
+      .attr("cy", yMap6)
+      .style("fill", "dodgerblue") 
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", .9);
+          tooltip.html(d["Country"] + "<br/> (" + xValue6(d) 
+	        + ", " + yValue6(d) + ")")
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", 0);
+      });
+  
+});
+
+
+
+</script>
+</body>
+</html>
