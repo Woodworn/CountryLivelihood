@@ -92,7 +92,7 @@ function barChart() {
             enterSet.append("g")
                 .attr("class", barClass)
                 .attr("id", function(d){
-                    return d[nameKey];
+                    return "Candle" + d[nameKey].replace(/\s/g, '');
                 })
                 .attr("fill", function(d,i){
                     if(d[nameKey] === selectedCountry){
@@ -114,6 +114,9 @@ function barChart() {
 
             enterSet.append("g")
                 .attr("class", barClass)
+                .attr("id", function(d){
+                    return "Candle" + d[nameKey].replace(/\s/g, '');
+                })
                 .attr("fill", function(d,i){
                     if(d[nameKey] === selectedCountry){
                         return "rgba(1,1,1,1)";
@@ -183,8 +186,10 @@ function barChart() {
     };
 
     chart.changeSelection = function(value){
-        selectedCountry = value;
-        d3.select("#"+value).attr("fill","rgba(0,0,0,1)");
+        d3.selectAll("#"+selectedCountry).style("fill","rgba(255,255,255,0)");
+        selectedCountry = "Candle" + value;
+        var country = d3.selectAll("#"+selectedCountry);
+        country.style("fill","rgba(0,0,0,1)");
     };
 
     chart.selectedCountry = function(value){

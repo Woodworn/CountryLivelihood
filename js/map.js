@@ -58,10 +58,8 @@ function map() {
                 .attr("class", "country")
                 .attr("d", path)
                 .attr("id", function (d, i) {
-                    if(d.properties.name === "Antarctica"){
-                        return d.properties.name;
-                    }
-                    return "C" +  d.id;
+                    var name = d.properties.name.replace(/\s/g, '');
+                    return name;
                 })
                 .attr("title", function (d, i) {
                     return d.properties.name;
@@ -100,14 +98,15 @@ function map() {
                     tooltip.classed("hidden", true);
                 })
                 .on("mousedown", function(d,i) {
-                    g.select("#C"+selectedCountryId).style("fill",function (d, i) {
+                    g.select("#"+selectedCountryId).style("fill",function (d, i) {
                         return "rgba(" + Math.floor(colorScale(d.properties.le)) + ", " + Math.floor(colorScale(d.properties.le)) + ", " + Math.floor(colorScale(d.properties.le)) + ", 1)";
                     });
+                    var id = d.properties.name.replace(/\s/g, '');
                     selectedCountry = d.properties.name;
-                    selectedCountryId = d.id;
-                    g.select("#C"+ d.id).style("fill","rgba(255,255,0,1)");
+                    selectedCountryId = id;
+                    g.select("#" + id).style("fill","rgba(255,255,0,1)");
                     console.log("Clicked country:");
-                    clickCallback(d.properties.name);
+                    clickCallback(id);
 
                     //redraw();
                 });
