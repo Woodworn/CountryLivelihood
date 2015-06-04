@@ -4,6 +4,8 @@ function map() {
     var selectedCountryId = undefined;
     var clickCallback = function(string){};
     var redraw;
+	var width = 1200;
+	var height = width / 1.5;
 
     var write = function(){
         console.log("DISPTACKHA JFKA");
@@ -14,9 +16,6 @@ function map() {
 
         var zoom = d3.behavior.zoom().scaleExtent([1, 9]).on("zoom", move);
 
-        //var width = document.getElementById('container').offsetWidth;
-        //var height = width / 2;
-
         var topo, projection, path, svg, g;
         var dispatch = d3.dispatch("draw");
 
@@ -25,7 +24,8 @@ function map() {
         setup(width, height);
 
         function setup(width, height) {
-            projection = d3.geo.mercator().translate([(width / 2), (height / 2)]).scale(width / 2 / Math.PI);
+            //projection = d3.geo.mercator().translate([(width / 2), (height / 2)]).scale(width / 2 / Math.PI);
+			projection = d3.geo.mercator().translate([(width/2), (height-250)]).scale(width / 2 / Math.PI);
             path = d3.geo.path().projection(projection);
             svg = d3.select("#map").append("svg").attr("width", width).attr("height", height); //.call(zoom);//.on("click", click).append("g");
             g = svg.append("g");
