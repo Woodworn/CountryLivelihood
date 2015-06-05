@@ -105,7 +105,7 @@ var navMap = function() {
                     return d.properties.continent == "South America";
                 })
             };
-            var antarctica = {
+            /*var antarctica = {
                 type: "FeatureCollection",
                 name: "Antarctica",
                 color: "#98df8a",
@@ -113,7 +113,7 @@ var navMap = function() {
                 features: countries.features.filter(function (d) {
                     return d.properties.continent == "Antarctica";
                 })
-            };
+            };*/
             var oceania = {
                 type: "FeatureCollection",
                 name: "Oceania",
@@ -125,7 +125,7 @@ var navMap = function() {
             };
             //skipped: Seven seas (open ocean) - only applies to French Southern and Antarctic Lands
 
-            continents = [asia, africa, europe, na, sa, antarctica, oceania];
+            continents = [asia, africa, europe, na, sa, oceania];
 
 
             //var continent = g.selectAll(".continent").data(continents);
@@ -209,7 +209,7 @@ var navMap = function() {
 
                 var projection = d3.geo.projection(project)
                     .scale(1)
-                    .translate([width / 2, height / 2]);
+                    .translate([width / 2, height/1.7]);
 
                 path = d3.geo.path().projection(projection);
 
