@@ -14,12 +14,20 @@
 
     <!-- D3 and Chart Scripts -->
     <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
+    <script src="http://d3js.org/d3.geo.projection.v0.min.js"></script>
+
+    <!-- Chart scripts -->
     <script src="js/CandleChart.js"></script>
+    <script src="js/NavMap.js"></script>
     <script src="js/map.js"></script>
-    <script src="js/topojson.v1.min.js"></script>
-    <script type="text/javascript" src="js/d3.min.js"></script>
+
 </head>
 <body>
+
+
+<div id="navMap">
+</div>
 
 <div class="jumbotron">
     <div class="container">
@@ -32,8 +40,7 @@
 <div id="map">
 </div>
 
-<div id="navMap">
-</div>
+
 
 <div id="candleChart">
 </div>
@@ -55,13 +62,12 @@
             .nameKey("Country")
             .title("Life Expectancy");
 
+    var dispatch = d3.dispatch("start");
     d3.csv("data/countries.csv", function (data) {
         d3.select("#candleChart")
                 .datum(data)
                 .call(candleChart);
     });
-
-    //candleChart.changeSelection("Canada");
 
     var mapChart = map()
             .width(1200)
@@ -73,6 +79,16 @@
 
     d3.select("#map")
             .call(mapChart);
+
+    var navigationMap = navMap()
+            .width(500)
+            .height(300);
+
+    d3.select("#navMap")
+           .call(navigationMap);
+
+    dispatch.start();
+    //candleChart.filterContinent("NorthAmerica");
 </script>
 </body>
 </html>

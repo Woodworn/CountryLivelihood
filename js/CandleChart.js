@@ -1,7 +1,7 @@
 function barChart() {
 
-    var width;
-    var height;
+    var width = 0;
+    var height = 0;
     var valueMin = 0;
     var valueMax = 0;
     var margin = {top: 20, right: 20, bottom: 30, left: 20};
@@ -19,6 +19,17 @@ function barChart() {
     var xTicks = undefined;
     var yTicks = undefined;
     var selectedCountry;
+
+    var nameScale = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1);
+
+    var valueScale = d3.scale.linear()
+        .range([0, height/3.]);
+
+    var topValueScale = d3.scale.linear()
+        .range([0, height/3.]);
+    var bottomValueScale = d3.scale.linear()
+        .range([0, height/3.]);
 
     var chart = function(selection) {
         selection.each(function(data,i) {
@@ -40,21 +51,13 @@ function barChart() {
             var botMax = d3.max(data, function(d) { return +d[bottomBarKey]; });
 
             //Create Scales
-            var nameScale = d3.scale.ordinal()
-                .rangeRoundBands([0, width], .1)
-                .domain(data.map(function(d) { return d[nameKey]; }));
+            nameScale.domain(data.map(function(d) { return d[nameKey]; }));
 
-            var valueScale = d3.scale.linear()
-                .range([0, height/3.])
-                .domain([vMin, vMax]);
+            valueScale.domain([vMin, vMax]);
 
-            var topValueScale = d3.scale.linear()
-                .range([0, height/3.])
-                .domain([valueMin, topMax]);
+            topValueScale.domain([valueMin, topMax]);
 
-            var bottomValueScale = d3.scale.linear()
-                .range([0, height/3.])
-                .domain([valueMin, botMax]);
+            bottomValueScale.domain([valueMin, botMax]);
 
             //Create encapsulating SVG
             var svg = selection.append("svg")
@@ -181,7 +184,6 @@ function barChart() {
                 .attr("dy", "1em")
                 .style("text-anchor", "middle")
                 .text(yLabel);
-
         })
     };
 
@@ -202,14 +204,28 @@ function barChart() {
     chart.width = function(value) {
         if (!arguments.length) return width;
         width = value;
+        nameScale = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
         return chart;
     };
 
     chart.height = function(value) {
         if (!arguments.length) return height;
         height = value;
+        valueScale = d3.scale.linear()
+            .range([0, height/3.]);
+
+        topValueScale = d3.scale.linear()
+            .range([0, height/3.]);
+        bottomValueScale = d3.scale.linear()
+            .range([0, height/3.]);
         return chart;
     };
+
+    chart.changeValues = function() {
+        valueScale.range([0,height]);
+    };
+
 
     chart.chartClass = function(value) {
         if(!arguments.length) return chartClass;

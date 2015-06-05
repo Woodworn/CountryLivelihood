@@ -32,10 +32,17 @@ rect {
 }
 
 #navMap {
-    margin-left: 2%;
+    margin-left: 70%;
+    margin-top: 2%;
     width: 30%;
     height: 400px;
     float:left;
+    position: fixed;
+
+}
+
+#navMap svg {
+    background-color:rgb(247,247,249);
 }
 
 #candleChart{

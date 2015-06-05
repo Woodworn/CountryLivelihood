@@ -1,7 +1,19 @@
 .country:hover{
-  stroke: #000099;
-  stroke-width: 1.5px;
+     stroke: #000099;
+     stroke-width: 1.5px;
+ }
+
+.continent:hover{
+    stroke: #000099;
+    stroke-width: 1.5px;
 }
+
+.continent.selected{
+    color: red;
+    stroke: #000099;
+    stroke-width: 1.5px;
+}
+
 .hidden { 
   display: none; 
 }
@@ -18,8 +30,6 @@ div.tooltip {
 
 #map {
     margin-left: 2%;
-    border:1px solid #000;
-    border-radius: 5px;
     overflow:hidden;
     background: #5CD6FF;
     float:left;

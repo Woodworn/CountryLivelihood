@@ -51,7 +51,7 @@ function map() {
             });
 
             var colorScale = d3.scale.linear()
-                .range([0, 255.])
+                .range(["#310D0D","white"])
                 .domain([vMin, vMax]);
 
             country.enter().insert("path")
@@ -75,7 +75,7 @@ function map() {
                     {
                         return "rgba(255,255,0,1)";
                     }
-                    return "rgba(" + Math.floor(colorScale(d.properties.le)) + ", " + Math.floor(colorScale(d.properties.le)) + ", " + Math.floor(colorScale(d.properties.le)) + ", 1)";
+                    return colorScale(d.properties.le);
                 });
             // Remove Antarctica
             g.select("#Antarctica").remove();
@@ -98,20 +98,20 @@ function map() {
                     tooltip.classed("hidden", true);
                 })
                 .on("mousedown", function(d,i) {
-					if (d.properties.le !== undefined) {
-                        
-                    
                     g.select("#"+selectedCountryId).style("fill",function (d, i) {
-                        return "rgba(" + Math.floor(colorScale(d.properties.le)) + ", " + Math.floor(colorScale(d.properties.le)) + ", " + Math.floor(colorScale(d.properties.le)) + ", 1)";
+                        return colorScale(d.properties.le);
                     });
-					
-                    var id = d.properties.name.replace(/\s/g, '');
-                    selectedCountry = d.properties.name;
-                    selectedCountryId = id;
-                    g.select("#" + id).style("fill","rgba(255,255,0,1)");
-                    console.log("Clicked country:");
-                    clickCallback(id);
-				}
+
+                    if (d.properties.le !== undefined) {
+
+
+                        var id = d.properties.name.replace(/\s/g, '');
+                        selectedCountry = d.properties.name;
+                        selectedCountryId = id;
+                        g.select("#" + id).style("fill","rgba(255,255,0,1)");
+                        console.log("Clicked country:");
+                        clickCallback(id);
+                    }
                     //redraw();
                 });
 
