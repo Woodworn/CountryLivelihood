@@ -1,4 +1,5 @@
 function matrix() { 
+alert();
 
 var margin = {top: 10, right: 40, bottom: 30, left: 70},
     width = 300- margin.left - margin.right,
