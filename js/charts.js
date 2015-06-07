@@ -34,9 +34,6 @@ d3.csv("data/countries.csv", function(sourceData){
     sortData();
 
     function drawMap() {
-
-        d3.select(".mapSvg").remove();
-
         //MAP
         var mapWidth = 960;
         var mapHeight = 500;
@@ -205,7 +202,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
         console.log("Drawing");
 
-        d3.select(".candleSvg").remove();
+       
 
         sortData();
         //Candle Chart
@@ -659,7 +656,9 @@ d3.csv("data/countries.csv", function(sourceData){
     }
 
     function redraw(){
+		d3.select(".mapSvg").remove();
         drawMap();
+		d3.select(".candleSvg").remove();
         drawCandle();
     }
 
