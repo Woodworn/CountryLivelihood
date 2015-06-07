@@ -41,7 +41,7 @@ d3.csv("data/countries.csv", function(sourceData){
         var mapWidth = 960;
         var mapHeight = 500;
         var mapSelectColor = "rgb(255,255,0)";
-        var mapUndefinedColor = "#5CD6FF";
+        var mapUndefinedColor = "#9966FF";
 
         var projection = d3.geo.mercator().translate([(mapWidth / 2), (mapHeight - 200)]).scale(mapWidth / 2 / Math.PI);
 
@@ -83,6 +83,7 @@ d3.csv("data/countries.csv", function(sourceData){
                     var country = _.findWhere(data, {Country: d.properties.name});
                     if (country != undefined) {
                         if(selectedContinent != undefined){
+							
                             if(country.Continent != selectedContinent) {
                                 return "#5CD6FF";
                             }
