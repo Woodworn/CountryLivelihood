@@ -39,6 +39,10 @@ rect {
     position: fixed;
 
 }
+#menus {
+    clear:both;
+}
+
 
 #navMap svg {
     background-color:rgb(247,247,249);
