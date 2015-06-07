@@ -1,3 +1,5 @@
+function matrix() { 
+
 var margin = {top: 10, right: 40, bottom: 30, left: 70},
     width = 300- margin.left - margin.right,
     height = 150 - margin.top - margin.bottom;
@@ -1441,3 +1443,4 @@ d3.csv("data/countries.csv", function(error, data) {
 
   
 });
+}
