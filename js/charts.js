@@ -39,8 +39,19 @@ d3.csv("data/countries.csv", function(sourceData){
         var mapHeight = 500;
         var mapSelectColor = "rgb(255,255,0)";
         var mapUndefinedColor = "#9966FF";
-
+		
         var projection = d3.geo.mercator().translate([(mapWidth / 2), (mapHeight - 200)]).scale(mapWidth / 2 / Math.PI);
+		if(selectedContinent != undefined){
+							
+						if(selectedContinent == "Africa"){
+							projection = d3.geo.mercator().translate([(mapWidth / 2.1), (mapHeight - 210)]).scale(mapWidth / 3);
+						}
+						else if(selectedContinent == "Asia"){
+							projection = d3.geo.mercator().translate([(mapWidth / 4), (mapHeight - 200)]).scale(mapWidth / 3);
+						}
+		
+                    
+                        }
 
         var mapSvg = d3.select("#map").append("svg")
             .attr("class", "mapSvg")
@@ -81,8 +92,15 @@ d3.csv("data/countries.csv", function(sourceData){
                     if (country != undefined) {
                         if(selectedContinent != undefined){
 							
+						if(selectedContinent == "Africa"){
+							projection = d3.geo.mercator().translate([(mapWidth / 2.1), (mapHeight - 210)]).scale(mapWidth / 3);
+						}
+						else if(selectedContinent == "Asia"){
+							projection = d3.geo.mercator().translate([-2,1]).scale(mapWidth / 3);
+						}
+		
                             if(country.Continent != selectedContinent) {
-                                return "#5CD6FF";
+                                return "#3399FF";
                             }
                         }
                         return colorScale(country[valueKey]);
@@ -589,15 +607,15 @@ d3.csv("data/countries.csv", function(sourceData){
                     if(selectedContinent === d.name) {
                         selectedContinent = undefined;
                         filterBarData(undefined);
-                        redraw();
-                        return;
+                        return redraw();
+                       
                     }
                     d3.select("#"+ d.name.replace(/\s/g, '')).classed("selected", true);
                     filterBarData(d.name)
                     selectedContinent = d.name;
                     clearHighlightBar();
                     clearMapHighlight();
-                    selectedCountry = undefined;
+                    selectedCountry = undefined;	
                     redraw();
                 });
 
