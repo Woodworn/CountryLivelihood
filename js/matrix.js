@@ -704,7 +704,7 @@ d3.csv("data/countries.csv", function(error, data) {
       .attr("x", width)
       .attr("y", -6)
       .style("text-anchor", "end")
-      .text("HIV/AIDSLiving");
+      .text("HIV/AIDSDeath");
 
   // y-axis
   svg12.append("g")
@@ -716,7 +716,7 @@ d3.csv("data/countries.csv", function(error, data) {
       .attr("y", 7)
       .attr("dy", ".80em")
       .style("text-anchor", "end")
-      .text("HIV/AIDSDeath");
+      .text("HIV/AIDSLiving");
 
   // draw dots
   svg12.selectAll(".dot")
