@@ -225,7 +225,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
         console.log("Drawing");
 
-       
+       d3.select(".candleSvg").remove();
 
         sortData();
         //Candle Chart
@@ -680,8 +680,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
     function redraw(){
 		d3.select(".mapSvg").remove();
-        drawMap();
-		d3.select(".candleSvg").remove();
+        drawMap();	
         drawCandle();
     }
 
