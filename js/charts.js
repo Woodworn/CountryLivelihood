@@ -47,7 +47,19 @@ d3.csv("data/countries.csv", function(sourceData){
 							projection = d3.geo.mercator().translate([(mapWidth / 2.1), (mapHeight - 210)]).scale(mapWidth / 3);
 						}
 						else if(selectedContinent == "Asia"){
-							projection = d3.geo.mercator().translate([(mapWidth / 4), (mapHeight - 200)]).scale(mapWidth / 3);
+							projection = d3.geo.mercator().translate([(mapWidth / 10), (mapHeight - 110)]).scale(mapWidth / 3);
+						}
+						else if(selectedContinent == "Europe"){
+							projection = d3.geo.mercator().translate([(mapWidth / 7.5), (mapHeight + 130)]).scale(mapWidth / 4);
+						}
+						else if(selectedContinent == "Oceania"){
+							projection = d3.geo.mercator().translate([(-700), (mapHeight/2-250)]).scale(mapHeight);
+						}
+						else if(selectedContinent == "North America"){
+							projection = d3.geo.mercator().translate([(750), (mapHeight+20)]).scale(mapWidth / 4);
+						}
+						else if(selectedContinent == "South America"){
+							projection = d3.geo.mercator().translate([(700), (mapHeight-400)]).scale(mapWidth / 3);
 						}
 		
                     
@@ -91,13 +103,6 @@ d3.csv("data/countries.csv", function(sourceData){
                     var country = _.findWhere(data, {Country: d.properties.name});
                     if (country != undefined) {
                         if(selectedContinent != undefined){
-							
-						if(selectedContinent == "Africa"){
-							projection = d3.geo.mercator().translate([(mapWidth / 2.1), (mapHeight - 210)]).scale(mapWidth / 3);
-						}
-						else if(selectedContinent == "Asia"){
-							projection = d3.geo.mercator().translate([-2,1]).scale(mapWidth / 3);
-						}
 		
                             if(country.Continent != selectedContinent) {
                                 return "#3399FF";
