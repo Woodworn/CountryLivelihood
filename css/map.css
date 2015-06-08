@@ -29,7 +29,7 @@ div.tooltip {
 }
 
 #map {
-    margin-left: 2%;
+	margin-bottom: 10px;
     overflow:hidden;
     background: #5CD6FF;
     float:left;

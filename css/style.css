@@ -1,3 +1,12 @@
+body{
+font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+font-size: 14px;
+margin-left: 1%;
+}
+
+.container2 p{
+	width: 70%;
+}
 .axis path,
 .axis line {
     fill: none;
@@ -42,7 +51,14 @@ rect {
 #menus {
     clear:both;
 }
-
+#tb, #bb{
+	float: left;
+	padding-right: 10px;
+}
+#text{
+	float: left;
+	padding-right: 10px;
+}
 
 #navMap svg {
     background-color:rgb(247,247,249);

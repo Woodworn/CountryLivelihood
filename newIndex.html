@@ -20,28 +20,39 @@
     <!-- Underscore.js -->
     <script src="http://underscorejs.org/underscore-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.11/crossfilter.js"></script>
-
-
+<style>
+.container2{
+font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+font-size: 14px;
+margin-left: 1%;
+}
+</style>
 </head>
 <body>
 
 
     <div class="jumbotron">
-        <div class="container">
+        <div class="container">	
             <h1>Country Visualization</h1>
-            <p>Many of us don’t have the chance to see the world and know what life is like in other countries. This visualization seeks to show how the lives and populations of people in different countries are affected by a variety of factors, including life expectancy, fertility, population, affects of HIV/AIDS, infant mortality rates, death rates, and unemployment rates and how these factors affect each other, if at all. <p>
         </div>
-    </div>
-
-    <div id="mainMenu"></div>
+		 </div>
+	
+ 
+ 
+<div class="container2">
+<p>Many of us don’t have the chance to see the world and know what life is like in other countries. This visualization seeks to show how the lives and populations of people in different countries are affected by a variety of factors, including life expectancy, fertility, population, affects of HIV/AIDS, infant mortality rates, death rates, and unemployment rates and how these factors affect each other, if at all. <p>
+   <div id="mainMenu"><div id="text">Select a factor to display in the map below.</div></div>
     <div id="navMap"></div>
     <div id="map"></div>
 	
     <div id="menus">
-        Top Bar Value
-        <div id="topMenu"></div>
-        Bottom Bar Value
-        <div id="bottomMenu"></div>
+        
+        <div id="topMenu">
+		<div id="tb">Top Bar Value</div>
+		</div>
+        <div id="bottomMenu">
+		<div id="bb">Bottom Bar Value</div>
+		</div>
     </div>
 
     <div id="candleChart"></div>
@@ -52,6 +63,6 @@
 	
 	
     </script>
-
+ </div>
 </body>
 </html>
