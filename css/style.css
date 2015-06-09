@@ -7,13 +7,13 @@ margin-left: 1%;
 .container2 p{
 	width: 70%;
 }
-.axis path,
-.axis line {
+.candleAxis path,
+.candleAxis line {
     fill: none;
     stroke: black;
     shape-rendering: crispEdges;
 }
-.axis text {
+.candleAxis text {
     font-family: sans-serif;
     font-size: 11px;
 }
@@ -66,4 +66,41 @@ rect {
 
 #candleChart{
     clear:both;
+}
+
+svg {
+    font: 10px sans-serif;
+    padding: 10px;
+}
+
+.axis,
+.frame {
+    shape-rendering: crispEdges;
+}
+
+.axis line {
+    stroke: #ddd;
+}
+
+.axis path {
+    display: none;
+}
+
+.frame {
+    fill: none;
+    stroke: #aaa;
+}
+
+circle {
+    fill-opacity: .7;
+}
+
+circle.hidden {
+    fill: #ccc !important;
+}
+
+.extent {
+    fill: #000;
+    fill-opacity: .125;
+    stroke: #fff;
 }

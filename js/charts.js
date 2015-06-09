@@ -20,6 +20,10 @@ d3.csv("data/countries.csv", function(sourceData){
     var barHighlight = "rgb(255,255,0)";
 
     function sortData(){
+        barData = _.sortBy(barData, function(d){
+            return +d[valueKey];
+        });
+        /*
         barData.sort(function(a, b){
             if(a[valueKey] < b[valueKey]) {
                 return -1;
@@ -28,7 +32,7 @@ d3.csv("data/countries.csv", function(sourceData){
                 return 1;
             }
             return 0;
-        });
+        });*/
     }
 
     sortData();
@@ -223,11 +227,12 @@ d3.csv("data/countries.csv", function(sourceData){
 
     function drawCandle() {
 
-        console.log("Drawing");
+        //console.log("Drawing");
 
-       d3.select(".candleSvg").remove();
+        d3.select(".candleSvg").remove();
 
         sortData();
+
         //Candle Chart
         var vMax = d3.max(barData, function (d) {
             return +d[valueKey];
@@ -278,7 +283,7 @@ d3.csv("data/countries.csv", function(sourceData){
             .data(barData)
             .enter();
 
-        var offsetL = document.getElementById('candleChart').offsetLeft + 20;
+        var offsetL = document.getElementById('candleChart').offsetLeft + 70;
         var offsetT = document.getElementById('candleChart').offsetTop + 10;
         var tooltip = d3.select("#candleChart").append("div").attr("class", "tooltip hidden");
 
@@ -310,7 +315,7 @@ d3.csv("data/countries.csv", function(sourceData){
                     return parseInt(d);
                 });
 
-                tooltip.classed("hidden", false).attr("style", "left:" + (mouse[0] + offsetL + 10) + "px;top:" + (mouse[1] + offsetT) + "px").html(d[nameKey] + " " + topBarKey + ": " + d[topBarKey]);
+                tooltip.classed("hidden", false).attr("style", "left:" + (mouse[0] + offsetL ) + "px;top:" + (mouse[1] + offsetT) + "px").html(d[nameKey] + " " + topBarKey + ": " + d[topBarKey]);
 
             })
             .on("mouseout", function (d, i) {
@@ -390,7 +395,7 @@ d3.csv("data/countries.csv", function(sourceData){
         yAxis.ticks(2);
 
         cSvg.append("g")
-            .attr("class", "y axis")
+            .attr("class", "candleAxis")
             .attr("transform", "translate(0," + candleHeight/3. + ")")
             .call(yAxis)
             .append("text")
@@ -668,7 +673,110 @@ d3.csv("data/countries.csv", function(sourceData){
     }
 
 
+    function drawSPM(){
 
+        d3.select(".scatterSVG").remove();
+
+
+        var width = 960,
+            size = 200,
+            padding = 19.5;
+
+        var x = d3.scale.linear()
+            .range([padding / 2, size - padding / 2]);
+
+        var y = d3.scale.linear()
+            .range([size - padding / 2, padding / 2]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(5);
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(5);
+
+        var color = d3.scale.category10();
+
+        var traits = ["UnemploymentRate","HIV/AIDSAdult","HIV/AIDSDeath","HIV/AIDSLiving"];
+        var domainByTrait = {},
+            n = traits.length;
+
+        traits.forEach(function(trait) {
+            domainByTrait[trait] = d3.extent(barData, function(d) { return +d[trait]; });
+        });
+
+        xAxis.tickSize(size * n );
+        yAxis.tickSize(-size * n);
+
+        var svg = d3.select("#scatterPlot").append("svg")
+            .attr("class", "scatterSVG")
+            .attr("width", size * n + padding)
+            .attr("height", size * n + padding + 20)
+            .append("g")
+            .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+
+        svg.selectAll(".x.axis")
+            .data(traits)
+            .enter().append("g")
+            .attr("class", "x axis")
+            .attr("transform", function(d, i) { return "translate(" + (n - i - 1) * size + ",0)"; })
+            .each(function(d) { x.domain(domainByTrait[d]); d3.select(this).call(xAxis); });
+
+        svg.selectAll(".y.axis")
+            .data(traits)
+            .enter().append("g")
+            .attr("class", "y axis")
+            .attr("transform", function(d, i) { return "translate(0," + i * size + ")"; })
+            .each(function(d) { y.domain(domainByTrait[d]); d3.select(this).call(yAxis); });
+
+        var cell = svg.selectAll(".cell")
+            .data(cross(traits, traits))
+            .enter().append("g")
+            .attr("class", "cell")
+            .attr("transform", function(d) { return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")"; })
+            .each(plot);
+
+        // Titles for the diagonal.
+        cell.filter(function(d) { return d.i === d.j; }).append("text")
+            .attr("x", padding)
+            .attr("y", padding)
+            .attr("dy", ".71em")
+            .text(function(d) { return d.x; });
+
+        function plot(p) {
+            var cell = d3.select(this);
+
+            x.domain(domainByTrait[p.x]);
+            y.domain(domainByTrait[p.y]);
+
+            cell.append("rect")
+                .attr("class", "frame")
+                .attr("x", padding / 2)
+                .attr("y", padding / 2)
+                .attr("width", size - padding)
+                .attr("height", size - padding);
+
+            cell.selectAll("circle")
+                .data(barData)
+                .enter().append("circle")
+                .attr("cx", function(d) { return x(d[p.x]); })
+                .attr("cy", function(d) { return y(d[p.y]); })
+                .attr("r", 3)
+                .style("fill", function(d) { return color(d.species); });
+        }
+
+        function cross(a, b) {
+            var c = [], n = a.length, m = b.length, i, j;
+            for (i = -1; ++i < n;) for (j = -1; ++j < m;) c.push({x: a[i], i: i, y: b[j], j: j});
+            return c;
+        }
+
+        d3.select(self.frameElement).style("height", size * n + padding + 20 + "px");
+
+    }
 
     function drawAll(){
         d3.selectAll("svg").remove();
@@ -676,27 +784,30 @@ d3.csv("data/countries.csv", function(sourceData){
         drawCandle();
         drawNavMap();
         drawDropMenus();
+        drawSPM();
     }
 
     function redraw(){
 		d3.select(".mapSvg").remove();
         drawMap();	
         drawCandle();
+        drawSPM();
     }
 
     drawAll();
-	matrix();
+	//matrix();
 
 });
 
+/*
 function matrix() { 
 var margin = {top: 10, right: 40, bottom: 30, left: 70},
     width = 300- margin.left - margin.right,
     height = 150 - margin.top - margin.bottom;
 
-/* 
-population vs hiv death
- */ 
+
+//population vs hiv death
+
 
 // setup x 
 var xValue = function(d) { return d["Population"] ;}, // data -> value
@@ -733,7 +844,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["HIV/AIDSDeath"] = +d["HIV/AIDSDeath"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 
   //domain spicification
@@ -793,9 +904,9 @@ d3.csv("data/countries.csv", function(error, data) {
 });
 
 
-/* 
-    death rate vs hiv/aids death
- */ 
+
+//    death rate vs hiv/aids death
+
 
 // setup x 
 var xValue2 = function(d) { return d["DeathRate"] ;}, // data -> value
@@ -827,7 +938,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["DeathRate"] = +d["DeathRate"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain spicification
   xScale2.domain([d3.min(data, xValue2)-1,d3.max(data, xValue2)+1]);
@@ -885,9 +996,9 @@ d3.csv("data/countries.csv", function(error, data) {
   
 });
 
-/* 
-life epectency vs hiv death
- */ 
+
+//life epectency vs hiv death
+
 
 // setup x 
 var xValue3 = function(d) { return d["LifeExpectancy"] ;}, // data -> value
@@ -918,7 +1029,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["LifeExpectancy"] = +d["LifeExpectancy"];
    d["HIV/AIDSDeath"]  = +d["HIV/AIDSDeath"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 
   xScale3.domain([d3.min(data, xValue3)-1,d3.max(data, xValue3)+1]);
@@ -976,9 +1087,9 @@ d3.csv("data/countries.csv", function(error, data) {
 });
 
 
-/* 
-HIV/AIDSLiving vs hiv death
- */ 
+
+//HIV/AIDSLiving vs hiv death
+
 
 // setup x 
 var xValue9 = function(d) { return d["HIV/AIDSLiving"] ;}, // data -> value
@@ -1015,7 +1126,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["HIV/AIDSDeath"] = +d["HIV/AIDSDeath"];
    d["HIV/AIDSLiving"]  = +d["HIV/AIDSLiving"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 
   //domain spicification
@@ -1074,9 +1185,9 @@ d3.csv("data/countries.csv", function(error, data) {
   
 });
 
-/* 
-population vs hiv living
- */ 
+
+//population vs hiv living
+
 
 // setup x 
 var xValue5 = function(d) { return d["Population"] ;}, 
@@ -1107,7 +1218,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["DeathRate"] = +d["DeathRate"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 
 // domain spicification
@@ -1162,9 +1273,9 @@ d3.csv("data/countries.csv", function(error, data) {
                .style("opacity", 0);
       });
 });
-/* 
- death rate vs HIV living
- */ 
+
+// death rate vs HIV living
+
 
 // setup x 
 var xValue6 = function(d) { return d["DeathRate"] ;}, // data -> value
@@ -1195,7 +1306,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["DeathRate"] = +d["DeathRate"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 
   // domain spicification
@@ -1253,9 +1364,9 @@ d3.csv("data/countries.csv", function(error, data) {
 });
 
 
-/* 
-	life expectncey vs hiv living 
- */ 
+
+//	life expectncey vs hiv living
+
 
 // setup x 
 var xValue4 = function(d) { return d["LifeExpectancy"] ;}, // data -> value
@@ -1285,7 +1396,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["HIV/AIDSLiving"] = +d["HIV/AIDSLiving"];
    d["LifeExpectancy"]  = +d["LifeExpectancy"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale4.domain([d3.min(data, xValue4)-1,d3.max(data, xValue4)+1]);
@@ -1379,7 +1490,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["HIV/AIDSDeath"] = +d["HIV/AIDSDeath"];
    d["HIV/AIDSLiving"]  = +d["HIV/AIDSLiving"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 
   //domain spicification
@@ -1438,7 +1549,7 @@ d3.csv("data/countries.csv", function(error, data) {
   
 });
 
-/* poulation vs death rate */
+// poulation vs death rate
 
 
 // setup x 
@@ -1469,7 +1580,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["DeathRate"] = +d["DeathRate"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale7.domain([d3.min(data, xValue7)-1,d3.max(data, xValue7)+1]);
@@ -1528,7 +1639,7 @@ d3.csv("data/countries.csv", function(error, data) {
 });
 
 
-/* population vs life_expextency*/
+// population vs life_expextency
 // setup x 
 var xValue8 = function(d) { return d["LifeExpectancy"] ;},  
     xScale8 = d3.scale.linear().range([0, width]), // value -> display
@@ -1557,7 +1668,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["LifeExpectancy"] = +d["LifeExpectancy"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale8.domain([d3.min(data, xValue8)-1,d3.max(data, xValue8)+1]);
@@ -1644,7 +1755,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["LifeExpectancy"] = +d["LifeExpectancy"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale10.domain([d3.min(data, xValue10)-1,d3.max(data, xValue10)+1]);
@@ -1732,7 +1843,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["HIV/AIDSDeath"] = +d["HIV/AIDSDeath"];
    d["Population"]  = +d["Population"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale11.domain([d3.min(data, xValue11)-1,d3.max(data, xValue11)+1]);
@@ -1818,7 +1929,7 @@ d3.csv("data/countries.csv", function(error, data) {
     d["Population"] = +d["Population"];
    d["DeathRate"]  = +d["DeathRate"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale13.domain([d3.min(data, xValue13)-1,1000000000]);
@@ -1904,7 +2015,7 @@ d3.csv("data/countries.csv", function(error, data) {
    d["HIV/AIDSDeath"] = +d["HIV/AIDSDeath"];
    d["DeathRate"]  = +d["DeathRate"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale14.domain([d3.min(data, xValue14)-1,d3.max(data, xValue14)]);
@@ -1990,7 +2101,7 @@ d3.csv("data/countries.csv", function(error, data) {
    d["HIV/AIDSLiving"] = +d["HIV/AIDSLiving"];
    d["DeathRate"]  = +d["DeathRate"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale15.domain([d3.min(data, xValue15)-1,d3.max(data, xValue15)]);
@@ -2076,7 +2187,7 @@ d3.csv("data/countries.csv", function(error, data) {
    d["LifeExpectancy"] = +d["LifeExpectancy"];
    d["DeathRate"]  = +d["DeathRate"] ;
    d["Continent"];
-     console.log(d);
+     //console.log(d);
   });
 // domain requirment for the axis
   xScale16.domain([d3.min(data, xValue16)-1,d3.max(data, xValue16)]);
@@ -2132,6 +2243,5 @@ d3.csv("data/countries.csv", function(error, data) {
 
   
 });
-
-}
+*/
 
