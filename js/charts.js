@@ -142,6 +142,12 @@ d3.csv("data/countries.csv", function(sourceData){
                         mapG.select("#" + selectedCountry[nameKey].replace(/\s/g, '')).style("fill", function (d, i) {
                             var country = _.findWhere(data, {Country: d.properties.name});
                             var le = country ? country[valueKey] : undefined;
+                            if(selectedContinent != undefined){
+
+                                if(country.Continent != selectedContinent) {
+                                    return "#3399FF";
+                                }
+                            }
                             return colorScale(le);
                         });
                     }
@@ -162,6 +168,12 @@ d3.csv("data/countries.csv", function(sourceData){
                     mapG.select("#" + selectedCountry[nameKey].replace(/\s/g, '')).style("fill", function (d, i) {
                         var country = _.findWhere(data, {Country: d.properties.name});
                         var le = country ? country[valueKey] : undefined;
+                        if(selectedContinent != undefined){
+
+                            if(country.Continent != selectedContinent) {
+                                return "#3399FF";
+                            }
+                        }
                         return colorScale(le);
                     });
                 }
@@ -173,7 +185,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
                 selectedCountry = country;
                 if (le !== undefined) {
-                    var id = selectedCountry[nameKey];
+                    var id = selectedCountry[nameKey].replace(/\s/g, '');
                     mapG.select("#" + id).style("fill", mapSelectColor);
                    // console.log(id)
                 }
