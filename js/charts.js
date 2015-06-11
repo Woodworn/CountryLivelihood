@@ -89,9 +89,9 @@ d3.csv("data/countries.csv", function(sourceData){
         });
 
         //offsets for tooltips
-        var offsetL = document.getElementById('map').offsetLeft + 20;
-        var offsetT = document.getElementById('map').offsetTop + 10;
-        var tooltip = d3.select("#map").append("div").attr("class", "tooltip hidden");
+        var offsetML = document.getElementById('map').offsetLeft + 1;
+        var offsetMT = document.getElementById('map').offsetTop + 1;
+        var tooltipM = d3.select("#map").append("div").attr("class", "tooltip hidden");
 
         var colorScale = d3.scale.linear()
             .range(["#310D0D", "white"])
@@ -130,11 +130,11 @@ d3.csv("data/countries.csv", function(sourceData){
                     });
                     var country = _.findWhere(data, {Country: d.properties.name});
                     var le = country ? country[valueKey] : undefined;
-                    tooltip.classed("hidden", false).attr("style", "left:" + (mouse[0] + offsetL) + "px;top:" + (mouse[1] + offsetT) + "px").html(d.properties.name + " " + le)
+                    tooltipM.classed("hidden", false).attr("style", "left:" + (mouse[0]+20) + "px;top:" + (mouse[1]+260) + "px").html(d.properties.name + " " + le)
 
                 })
                 .on("mouseout", function (d, i) {
-                    tooltip.classed("hidden", true);
+                    tooltipM.classed("hidden", true);
                 })
                 .on("mousedown", function (d, i) {
 
