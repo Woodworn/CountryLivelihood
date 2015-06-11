@@ -18,6 +18,17 @@ d3.csv("data/countries.csv", function(sourceData){
     var topBarColor = "#4F628E";
     var bottomBarColor = "#D4C26A";
     var barHighlight = "rgb(255,255,0)";
+	
+	function getActualWidth(){
+		var actualWidth = window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth ||
+        document.body.offsetWidth;
+		
+		return actualWidth;
+	}
+	
+	
 
     function sortData(){
         barData = _.sortBy(barData, function(d){
@@ -29,8 +40,9 @@ d3.csv("data/countries.csv", function(sourceData){
 
     function drawMap() {
         //MAP
-        var mapWidth = 960;
-        var mapHeight = 500;
+        var mapWidth = getActualWidth()/1.5;
+        var mapHeight = mapWidth/1.92;
+		//alert("Width = " + mapWidth + " Height = " + mapHeight);
         var mapSelectColor = "rgb(255,255,0)";
         var mapUndefinedColor = "#9966FF";
 		
