@@ -8,7 +8,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
     var candleWidth = 960;
     var candleHeight = 500;
-
+	var mapWidth;
     var topBarKey = "BirthRate";
     var bottomBarKey = "DeathRate";
 
@@ -40,7 +40,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
     function drawMap() {
         //MAP
-        var mapWidth = getActualWidth()/1.5;
+        mapWidth = getActualWidth()/1.5;
         var mapHeight = mapWidth/1.92;
 		//alert("Width = " + mapWidth + " Height = " + mapHeight);
         var mapSelectColor = "rgb(255,255,0)";
@@ -467,16 +467,15 @@ d3.csv("data/countries.csv", function(sourceData){
 
     function drawNavMap() {
 
-        var width = 500;
-        var height = 250;
-
+        var width = getActualWidth() - mapWidth-150;
+        var height = width/1.92;
         var mygeo = d3.geo;
 
         var options = [
-            {name: "Eckert III", projection: d3.geo.eckert3().scale(100)},
-            {name: "Eckert IV", projection: d3.geo.eckert4().scale(100)},
-            {name: "Wagner IV", projection: d3.geo.wagner4().scale(100)},
-            {name: "Winkel Tripel", projection: d3.geo.winkel3().scale(100)}
+            {name: "Eckert III", projection: d3.geo.eckert3().scale(60)},
+            {name: "Eckert IV", projection: d3.geo.eckert4().scale(60)},
+            {name: "Wagner IV", projection: d3.geo.wagner4().scale(60)},
+            {name: "Winkel Tripel", projection: d3.geo.winkel3().scale(60)}
         ];
 
         options.forEach(function (o) {
