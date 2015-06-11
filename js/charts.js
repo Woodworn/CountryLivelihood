@@ -70,23 +70,9 @@ d3.csv("data/countries.csv", function(sourceData){
         var mapG = mapSvg.append("g");
 
         var vMax = d3.max(data, function (d) {
-            if (selectedContinent != undefined) {
-
-
-                if (d.Continent != selectedContinent){
-                    return undefined;
-                }
-            }
             return +d[valueKey];
         });
         var vMin = d3.min(data, function (d) {
-            if (selectedContinent != undefined) {
-
-
-                if (d.Continent != selectedContinent){
-                    return undefined;
-                }
-            }
             return +d[valueKey];
         });
 
@@ -800,7 +786,7 @@ d3.csv("data/countries.csv", function(sourceData){
                     }
                     highlightBar();
                 });
-
+            
         }
 
         function cross(a, b) {
