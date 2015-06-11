@@ -8,7 +8,7 @@ d3.csv("data/countries.csv", function(sourceData){
 
     var candleWidth = 960;
     var candleHeight = 500;
-	var mapWidth;
+
     var topBarKey = "BirthRate";
     var bottomBarKey = "DeathRate";
 
@@ -18,17 +18,6 @@ d3.csv("data/countries.csv", function(sourceData){
     var topBarColor = "#4F628E";
     var bottomBarColor = "#D4C26A";
     var barHighlight = "rgb(255,255,0)";
-	
-	function getActualWidth(){
-		var actualWidth = window.innerWidth ||
-        document.documentElement.clientWidth ||
-        document.body.clientWidth ||
-        document.body.offsetWidth;
-		
-		return actualWidth;
-	}
-	
-	
 
     function sortData(){
         barData = _.sortBy(barData, function(d){
@@ -38,38 +27,44 @@ d3.csv("data/countries.csv", function(sourceData){
 
     sortData();
 
+    function getActualWidth(){
+        var actualWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth || document.body.offsetWidth;
+
+        return actualWidth;
+    }
+
+
     function drawMap() {
         //MAP
-        mapWidth = getActualWidth()/1.5;
-        var mapHeight = mapWidth/1.92;
-		//alert("Width = " + mapWidth + " Height = " + mapHeight);
+        var mapWidth = 960;
+        var mapHeight = 500;//mapWidth/1.4;
         var mapSelectColor = "rgb(255,255,0)";
         var mapUndefinedColor = "#9966FF";
-		
+
         var projection = d3.geo.mercator().translate([(mapWidth / 2), (mapHeight - 200)]).scale(mapWidth / 2 / Math.PI);
-		if(selectedContinent != undefined){
-							
-						if(selectedContinent == "Africa"){
-							projection = d3.geo.mercator().translate([(mapWidth / 2.1), (mapHeight - 210)]).scale(mapWidth / 3);
-						}
-						else if(selectedContinent == "Asia"){
-							projection = d3.geo.mercator().translate([(mapWidth / 10), (mapHeight - 110)]).scale(mapWidth / 3);
-						}
-						else if(selectedContinent == "Europe"){
-							projection = d3.geo.mercator().translate([(mapWidth / 7.5), (mapHeight + 130)]).scale(mapWidth / 4);
-						}
-						else if(selectedContinent == "Oceania"){
-							projection = d3.geo.mercator().translate([(-700), (mapHeight/2-250)]).scale(mapHeight);
-						}
-						else if(selectedContinent == "North America"){
-							projection = d3.geo.mercator().translate([(750), (mapHeight+20)]).scale(mapWidth / 4);
-						}
-						else if(selectedContinent == "South America"){
-							projection = d3.geo.mercator().translate([(700), (mapHeight-400)]).scale(mapWidth / 3);
-						}
-		
-                    
-                        }
+        if(selectedContinent != undefined){
+
+            if(selectedContinent == "Africa"){
+                projection = d3.geo.mercator().translate([(mapWidth / 2.1), (mapHeight - 210)]).scale(mapWidth / 3);
+            }
+            else if(selectedContinent == "Asia"){
+                projection = d3.geo.mercator().translate([(mapWidth / 10), (mapHeight - 110)]).scale(mapWidth / 3);
+            }
+            else if(selectedContinent == "Europe"){
+                projection = d3.geo.mercator().translate([(mapWidth / 7.5), (mapHeight + 130)]).scale(mapWidth / 4);
+            }
+            else if(selectedContinent == "Oceania"){
+                projection = d3.geo.mercator().translate([(-700), (mapHeight/2-250)]).scale(mapHeight);
+            }
+            else if(selectedContinent == "North America"){
+                projection = d3.geo.mercator().translate([(750), (mapHeight+20)]).scale(mapWidth / 4);
+            }
+            else if(selectedContinent == "South America"){
+                projection = d3.geo.mercator().translate([(700), (mapHeight-400)]).scale(mapWidth / 3);
+            }
+
+
+        }
 
         var mapSvg = d3.select("#map").append("svg")
             .attr("class", "mapSvg")
@@ -82,9 +77,23 @@ d3.csv("data/countries.csv", function(sourceData){
         var mapG = mapSvg.append("g");
 
         var vMax = d3.max(data, function (d) {
+            if (selectedContinent != undefined) {
+
+
+                if (d.Continent != selectedContinent){
+                    return undefined;
+                }
+            }
             return +d[valueKey];
         });
         var vMin = d3.min(data, function (d) {
+            if (selectedContinent != undefined) {
+
+
+                if (d.Continent != selectedContinent){
+                    return undefined;
+                }
+            }
             return +d[valueKey];
         });
 
@@ -109,7 +118,7 @@ d3.csv("data/countries.csv", function(sourceData){
                     var country = _.findWhere(data, {Country: d.properties.name});
                     if (country != undefined) {
                         if(selectedContinent != undefined){
-		
+
                             if(country.Continent != selectedContinent) {
                                 return "#3399FF";
                             }
@@ -160,7 +169,7 @@ d3.csv("data/countries.csv", function(sourceData){
                     if (le !== undefined) {
                         var id = d.properties.name.replace(/\s/g, '');
                         mapG.select("#" + id).style("fill", mapSelectColor);
-                       // console.log(id)
+                        // console.log(id)
                     }
                     highlightBar();
                 });
@@ -189,7 +198,7 @@ d3.csv("data/countries.csv", function(sourceData){
                 if (le !== undefined) {
                     var id = selectedCountry[nameKey].replace(/\s/g, '');
                     mapG.select("#" + id).style("fill", mapSelectColor);
-                   // console.log(id)
+                    // console.log(id)
                 }
             }
         });
@@ -467,15 +476,16 @@ d3.csv("data/countries.csv", function(sourceData){
 
     function drawNavMap() {
 
-        var width = getActualWidth() - mapWidth-150;
-        var height = width/1.92;
+        var width = d3.select("#navMap").node().getBoundingClientRect().width;//500;
+        var height = width/2.;
+
         var mygeo = d3.geo;
 
         var options = [
-            {name: "Eckert III", projection: d3.geo.eckert3().scale(60)},
-            {name: "Eckert IV", projection: d3.geo.eckert4().scale(60)},
-            {name: "Wagner IV", projection: d3.geo.wagner4().scale(60)},
-            {name: "Winkel Tripel", projection: d3.geo.winkel3().scale(60)}
+            {name: "Eckert III", projection: d3.geo.eckert3().scale(100)},
+            {name: "Eckert IV", projection: d3.geo.eckert4().scale(100)},
+            {name: "Wagner IV", projection: d3.geo.wagner4().scale(100)},
+            {name: "Winkel Tripel", projection: d3.geo.winkel3().scale(100)}
         ];
 
         options.forEach(function (o) {
@@ -627,14 +637,14 @@ d3.csv("data/countries.csv", function(sourceData){
                         selectedContinent = undefined;
                         filterBarData(undefined);
                         return redraw();
-                       
+
                     }
                     d3.select("#"+ d.name.replace(/\s/g, '')).classed("selected", true);
                     filterBarData(d.name)
                     selectedContinent = d.name;
                     clearHighlightBar();
                     clearMapHighlight();
-                    selectedCountry = undefined;	
+                    selectedCountry = undefined;
                     redraw();
                 });
 
@@ -797,7 +807,7 @@ d3.csv("data/countries.csv", function(sourceData){
                     }
                     highlightBar();
                 });
-            
+
         }
 
         function cross(a, b) {
@@ -820,8 +830,8 @@ d3.csv("data/countries.csv", function(sourceData){
     }
 
     function redraw(){
-		d3.select(".mapSvg").remove();
-        drawMap();	
+        d3.select(".mapSvg").remove();
+        drawMap();
         drawCandle();
         drawSPM();
     }
@@ -829,4 +839,3 @@ d3.csv("data/countries.csv", function(sourceData){
     drawAll();
 
 });
-
